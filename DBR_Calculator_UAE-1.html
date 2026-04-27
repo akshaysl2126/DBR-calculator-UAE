@@ -39,6 +39,31 @@ body{
   box-shadow:0 25px 60px rgba(0,0,0,.12);
 }
 
+/* 🔥 BANK SLIDER */
+.bank-slider{
+  width:100%;
+  overflow:hidden;
+  margin-bottom:15px;
+}
+
+.bank-track{
+  display:flex;
+  gap:25px;
+  white-space:nowrap;
+  animation:scroll 25s linear infinite reverse; /* LEFT → RIGHT */
+}
+
+.bank-track span{
+  font-weight:600;
+  font-size:14px;
+}
+
+/* Smooth loop */
+@keyframes scroll{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-50%);}
+}
+
 h1{
   text-align:center;
   color:var(--blue-dark);
@@ -140,107 +165,53 @@ footer a{
 <body>
 <div class="container">
 
+<!-- 🔥 BANK SLIDER (PASTED HERE) -->
+<div class="bank-slider">
+  <div class="bank-track">
+
+    <!-- ORIGINAL -->
+    <span style="color:#003154;">FAB</span>
+    <span style="color:#BD2130;">Emirates NBD</span>
+    <span style="color:#E21E26;">ADCB</span>
+    <span style="color:#243B98;">DIB</span>
+    <span style="color:#FF5E00;">Mashreq</span>
+    <span style="color:#00968F;">ADIB</span>
+    <span style="color:#004F9F;">CBD</span>
+    <span style="color:#E60021;">RAKBANK</span>
+    <span style="color:#5F259F;">Emirates Islamic</span>
+    <span style="color:#917244;">Sharjah Islamic</span>
+    <span style="color:#003366;">NBF</span>
+    <span style="color:#862633;">Ajman Bank</span>
+    <span style="color:#0054A6;">Bank of Sharjah</span>
+    <span style="color:#A41E35;">UAB</span>
+    <span style="color:#005931;">NBQ</span>
+    <span style="color:#B2292E;">CBI</span>
+    <span style="color:#F05A28;">Al Hilal</span>
+    <span style="color:#D4AF37;">Invest Bank</span>
+    <span style="color:#005C42;">Al Masraf</span>
+
+    <!-- DUPLICATE (REQUIRED FOR LOOP) -->
+    <span style="color:#003154;">FAB</span>
+    <span style="color:#BD2130;">Emirates NBD</span>
+    <span style="color:#E21E26;">ADCB</span>
+    <span style="color:#243B98;">DIB</span>
+    <span style="color:#FF5E00;">Mashreq</span>
+    <span style="color:#00968F;">ADIB</span>
+    <span style="color:#004F9F;">CBD</span>
+    <span style="color:#E60021;">RAKBANK</span>
+    <span style="color:#5F259F;">Emirates Islamic</span>
+    <span style="color:#917244;">Sharjah Islamic</span>
+    <span style="color:#003366;">NBF</span>
+    <span style="color:#862633;">Ajman Bank</span>
+    <span style="color:#0054A6;">Bank of Sharjah</span>
+    <span style="color:#A41E35;">UAB</span>
+    <span style="color:#005931;">NBQ</span>
+    <span style="color:#B2292E;">CBI</span>
+    <span style="color:#F05A28;">Al Hilal</span>
+    <span style="color:#D4AF37;">Invest Bank</span>
+    <span style="color:#005C42;">Al Masraf</span>
+
+  </div>
+</div>
+
 <h1>DBR Calculator</h1>
-
-<div class="section">
-  <div class="label">Monthly Salary (AED)</div>
-  <input type="number" id="salary" placeholder="Enter salary">
-</div>
-
-<div class="section">
-  <div class="label">Credit Card Limits</div>
-  <div id="cards" class="list">
-    <input type="number" placeholder="Card limit">
-  </div>
-  <button class="add-btn" onclick="addField('cards')">+ Add card</button>
-</div>
-
-<div class="section">
-  <div class="label">Monthly Loan EMIs</div>
-  <div id="emis" class="list">
-    <input type="number" placeholder="Monthly EMI">
-  </div>
-  <button class="add-btn" onclick="addField('emis')">+ Add EMI</button>
-</div>
-
-<button class="calc-btn" onclick="calculate()">Check DBR</button>
-
-<div id="warning" class="warning"></div>
-
-<div id="bankBox" class="bank-box">
-  <div class="row"><span>Allowed Limit (50%)</span><span id="allowed"></span></div>
-  <div class="row"><span>Used Limit</span><span id="used"></span></div>
-  <div class="row"><span>DBR %</span><span id="dbr"></span></div>
-  <div id="status" class="badge"></div>
-</div>
-
-<footer>
-Powered by
-<a href="https://www.linkedin.com/in/akshay-s-l-478aa9184/" target="_blank">
-Akshay S L
-</a>
-</footer>
-
-</div>
-
-<script>
-function addField(id){
-  const box=document.getElementById(id);
-  if(box.children.length>=10) return;
-  const i=document.createElement("input");
-  i.type="number";
-  i.placeholder=id==="cards"?"Card limit":"Monthly EMI";
-  box.appendChild(i);
-}
-
-function sum(id){
-  let t=0;
-  document.querySelectorAll("#"+id+" input").forEach(i=>{
-    t+=Number(i.value)||0;
-  });
-  return t;
-}
-
-function calculate(){
-  const salary=Number(document.getElementById("salary").value);
-  const cards=sum("cards");
-  const emis=sum("emis");
-
-  const warning=document.getElementById("warning");
-  warning.style.display="none";
-
-  if(!salary || salary<=0){
-    warning.style.display="block";
-    warning.innerText="Please enter a valid monthly salary.";
-    return;
-  }
-
-  const allowed=salary/2;
-  const used=(cards*0.05)+emis;
-  const dbrPercent=((used/salary)*100).toFixed(1);
-
-  document.getElementById("bankBox").style.display="block";
-  document.getElementById("allowed").innerText="AED "+allowed.toFixed(2);
-  document.getElementById("used").innerText="AED "+used.toFixed(2);
-  document.getElementById("dbr").innerText=dbrPercent+" %";
-
-  const status=document.getElementById("status");
-  status.className="badge";
-
-  const diff=allowed-used;
-
-  if(used>allowed){
-    status.classList.add("red");
-    status.innerText="High DBR – Not Eligible";
-  }else if(diff<=200){
-    status.classList.add("orange");
-    status.innerText="Borderline – Limited Eligibility";
-  }else{
-    status.classList.add("green");
-    status.innerText="Eligible for New Credit";
-  }
-}
-</script>
-
-</body>
-</html>
